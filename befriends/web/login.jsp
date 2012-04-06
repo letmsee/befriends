@@ -3,7 +3,7 @@
     Created on : Apr 5, 2012, 10:13:15 AM
     Author     : duongna
 --%>
-
+<!--aaaaaaaaaaaaaaaaaaaaaaaaaaa-->
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/include/header.jsp"/>
 <p>Input information following:</p>
