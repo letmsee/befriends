@@ -5,11 +5,13 @@
 
 package data.access;
 
+import business.Account;
 import data.pool.ConnectionPool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Class provides methods about friendship of users 
@@ -76,6 +78,39 @@ public class FriendDAO extends DataDAO {
         } catch (SQLException sqle)  {
             sqle.printStackTrace();
             return false;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
+    
+    /**
+     * @return list of account of User's friends
+     */
+    public static ArrayList<Account> getFriendList(int accountId) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            String sqlCode =
+                    "SELECT acc.* " +
+                    "FROM Account as acc, Friend as fr " +
+                    "WHERE (fr.accountId1 = ? AND acc.accountId = fr.accountId2) OR " +
+                    "      (fr.accountId2 = ? AND acc.accountId = fr.accountId1)";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            preStatement.setInt(2, accountId);
+            ResultSet resutSet = preStatement.executeQuery();
+            
+            ArrayList<Account> friendList = new ArrayList<Account>();
+            while (resutSet.next()) {
+                Account acc = new Account();
+                acc.setBasicInfo(resutSet);
+                friendList.add(acc);
+            }
+            return friendList;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return null;
         } finally {
             freeDbResouce(preStatement, null, connection, pool);
         }

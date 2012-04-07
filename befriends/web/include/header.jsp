@@ -30,6 +30,7 @@
             <p>Manage friend</p>
         <a href="ViewRequestList">View Request List</a><br>
         <a href="ViewWaitingList">View Waiting List</a><br>
+        <a href="ViewFriendList">View Friend List</a><br>
     </td>
     <tr>
     <form action="SearchByUsername">
