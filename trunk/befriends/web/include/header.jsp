@@ -21,26 +21,31 @@
                         emailAddress: ${sessionScope.account.emailAddress}</p>
                 </td>
                 <td>
-            <li><a href="register_to_web.jsp">register</a></li>
-            <li><a href="login.jsp">login</a></li>
-            <li><a href="Logout">logout</a></li>
-            <li><a href="ViewRequestList">View Request List</a></li>
-                </td>
-                </tr>
-            <tr>
-            <form action="SearchByUsername">
-                <td><input type="text" name="usernameToFind"></td>
-                <td><input type="button" value="Search" onclick="validateSearch(this.form)"></td>
-            </form>
-        </tr>
-    </table>
-    
-    <%-- Java script to validate search by username --%>
-    <script type="text/javascript">
-        function validateSearch(form) {
-            if (form.usernameToFind.value != "") {
-                form.submit();
-            }
+                    <p>General</p>
+            <a href="register_to_web.jsp">register</a><br>
+            <a href="login.jsp">login</a><br>
+            <a href="Logout">logout</a><br>
+        </td>
+        <td>
+            <p>Manage friend</p>
+        <a href="ViewRequestList">View Request List</a><br>
+        <a href="ViewWaitingList">View Waiting List</a><br>
+    </td>
+    <tr>
+    <form action="SearchByUsername">
+        <td>
+            <input type="text" name="usernameToFind">
+            <input type="button" value="Search" onclick="validateSearch(this.form)">
+        </td>
+    </form>
+</tr>
+</table>
+
+<%-- Java script to validate search by username --%>
+<script type="text/javascript">
+    function validateSearch(form) {
+        if (form.usernameToFind.value != "") {
+            form.submit();
         }
-    </script>
-    
+    }
+</script>

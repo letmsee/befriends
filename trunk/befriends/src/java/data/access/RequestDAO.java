@@ -146,6 +146,39 @@ public class RequestDAO extends DataDAO {
         }
     }
     
+    /**
+     * get list of Target User's account that the User is waiting for
+     * accepting the User's request
+     * @param requestId - accountId of User
+     * @return list of target User's account
+     */
+    public static ArrayList<Account> getWaitingList(int requestId) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            String sqlCode =
+                    "SELECT acc.* " +
+                    "FROM Account as acc, Request as req " +
+                    "WHERE req.requestId = ? AND acc.accountId = req.targetId";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, requestId);
+            ResultSet resultSet = preStatement.executeQuery();
+            ArrayList<Account> waitingList = new ArrayList<Account>();
+            while (resultSet.next()) {
+                Account acc = new Account();
+                acc.setBasicInfo(resultSet);
+                waitingList.add(acc);
+            } 
+            return waitingList;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return null;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
+    
 }
     
 

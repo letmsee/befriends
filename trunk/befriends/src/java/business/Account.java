@@ -5,6 +5,8 @@
 package business;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.SimpleFormatter;
@@ -93,4 +95,17 @@ public class Account implements Serializable {
     public String toString() {
         return "Account{" + "accountId=" + accountId + ", birthday=" + birthday + ", emailAddress=" + emailAddress + ", gender=" + gender + ", password=" + password + ", username=" + username + '}';
     }    
+    
+    /**
+     * Add basic info from ResultSet to account
+     * Basic info is: accountId, username, birthday, school, gender
+     * 
+     */
+    public void setBasicInfo(ResultSet resultSet) throws SQLException {
+         setAccountId(resultSet.getInt("accountId"));
+         setUsername(resultSet.getString("username"));
+         setSchool(resultSet.getString("school"));
+         setBirthday(resultSet.getDate("birthday"));
+         setGender(resultSet.getString("gender"));
+    }
 }

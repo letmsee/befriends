@@ -178,12 +178,7 @@ public class AccountDAO extends DataDAO {
             ArrayList<Account> list = new ArrayList<Account>();
             while (resultSet.next()) {
                 Account acc = new Account();
-                acc.setAccountId(resultSet.getInt("accountId"));
-                acc.setUsername(resultSet.getString("username"));
-                acc.setSchool(resultSet.getString("school"));
-                acc.setBirthday(resultSet.getDate("birthday"));
-                acc.setGender(resultSet.getString("gender"));
-                
+                acc.setBasicInfo(resultSet);
                 list.add(acc);
             }
             return list;
