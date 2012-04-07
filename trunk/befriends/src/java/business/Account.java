@@ -5,6 +5,7 @@
 package business;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  *
@@ -12,12 +13,30 @@ import java.io.Serializable;
  */
 public class Account implements Serializable {
     private int accountId;
-    private String birthday;
+    private Date birthday;
     private String emailAddress;
     private String gender;
     private String password;
     private String username;    
-         
+    private String school;
+    private int age;
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getSchool() {
+        return school;
+    }
+
+    public void setSchool(String school) {
+        this.school = school;
+    }
+     
     public int getAccountId() {
         return accountId;
     }
@@ -26,11 +45,11 @@ public class Account implements Serializable {
         this.accountId = accountId;
     }
 
-    public String getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 
