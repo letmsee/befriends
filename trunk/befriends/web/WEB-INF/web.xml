@@ -35,6 +35,10 @@
         <servlet-name>AddFriendServlet</servlet-name>
         <servlet-class>servlet.AddFriendServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ViewRequestListServlet</servlet-name>
+        <servlet-class>servlet.ViewRequestListServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RegisterToWebServlet</servlet-name>
         <url-pattern>/RegisterToWeb</url-pattern>
@@ -50,6 +54,10 @@
     <servlet-mapping>
         <servlet-name>AddFriendServlet</servlet-name>
         <url-pattern>/AddFriend</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewRequestListServlet</servlet-name>
+        <url-pattern>/ViewRequestList</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

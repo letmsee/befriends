@@ -5,7 +5,9 @@
 package business;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.SimpleFormatter;
 
 /**
  *
@@ -19,14 +21,16 @@ public class Account implements Serializable {
     private String password;
     private String username;    
     private String school;
-    private int age;
 
+    /**
+     * Computes age of user
+     * @return age of user
+     */
     public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
+        SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+        int birthYear = Integer.parseInt(yearFormat.format(birthday));
+        int currentYear = Integer.parseInt(yearFormat.format(new Date()));
+        return currentYear - birthYear;
     }
 
     public String getSchool() {

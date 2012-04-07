@@ -180,16 +180,9 @@ public class AccountDAO extends DataDAO {
                 Account acc = new Account();
                 acc.setAccountId(resultSet.getInt("accountId"));
                 acc.setUsername(resultSet.getString("username"));
-              //  acc.setSchool(resultSet.getString("school"));
+                acc.setSchool(resultSet.getString("school"));
                 acc.setBirthday(resultSet.getDate("birthday"));
                 
-                // compute age
-                SimpleDateFormat formatYear = new SimpleDateFormat("yyyy");
-                int birthYear = Integer.parseInt(
-                        formatYear.format(acc.getBirthday()) );
-                int currentYear = Integer.parseInt(
-                        formatYear.format(new Date()) );
-                acc.setAge(currentYear - birthYear);
                 list.add(acc);
             }
             return list;
