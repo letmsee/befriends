@@ -20,6 +20,10 @@
         <servlet-name>SearchByUsernameServlet</servlet-name>
         <servlet-class>servlet.managefriend.SearchByUsernameServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DenyRequestServlet</servlet-name>
+        <servlet-class>servlet.managefriend.DenyRequestServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SearchByUsernameServlet</servlet-name>
         <url-pattern>/SearchByUsername</url-pattern>
@@ -66,6 +70,10 @@
     <servlet-mapping>
         <servlet-name>AcceptRequestServlet</servlet-name>
         <url-pattern>/AcceptRequest</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DenyRequestServlet</servlet-name>
+        <url-pattern>/DenyRequest</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
