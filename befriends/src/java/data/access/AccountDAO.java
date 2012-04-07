@@ -182,6 +182,7 @@ public class AccountDAO extends DataDAO {
                 acc.setUsername(resultSet.getString("username"));
                 acc.setSchool(resultSet.getString("school"));
                 acc.setBirthday(resultSet.getDate("birthday"));
+                acc.setGender(resultSet.getString("gender"));
                 
                 list.add(acc);
             }

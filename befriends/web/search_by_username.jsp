@@ -21,6 +21,7 @@
                 <td>
                     Username: ${acc.username}<br>
                     Age: ${acc.age}<br>
+                    Gender: ${acc.gender}<br>
                     School: ${acc.school}
                 </td>
                 <td>

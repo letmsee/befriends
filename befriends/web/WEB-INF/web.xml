@@ -6,19 +6,19 @@
     </servlet>
     <servlet>
         <servlet-name>RegisterToWebServlet</servlet-name>
-        <servlet-class>servlet.RegisterToWebServlet</servlet-class>
+        <servlet-class>servlet.general.RegisterToWebServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>servlet.LoginServlet</servlet-class>
+        <servlet-class>servlet.general.LoginServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>LogoutServlet</servlet-name>
-        <servlet-class>servlet.LogoutServlet</servlet-class>
+        <servlet-class>servlet.general.LogoutServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>SearchByUsernameServlet</servlet-name>
-        <servlet-class>servlet.SearchByUsernameServlet</servlet-class>
+        <servlet-class>servlet.managefriend.SearchByUsernameServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>SearchByUsernameServlet</servlet-name>
@@ -33,11 +33,15 @@
     </welcome-file-list>
     <servlet>
         <servlet-name>AddFriendServlet</servlet-name>
-        <servlet-class>servlet.AddFriendServlet</servlet-class>
+        <servlet-class>servlet.managefriend.AddFriendServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ViewRequestListServlet</servlet-name>
-        <servlet-class>servlet.ViewRequestListServlet</servlet-class>
+        <servlet-class>servlet.managefriend.ViewRequestListServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AcceptRequestServlet</servlet-name>
+        <servlet-class>servlet.managefriend.AcceptRequestServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>RegisterToWebServlet</servlet-name>
@@ -58,6 +62,10 @@
     <servlet-mapping>
         <servlet-name>ViewRequestListServlet</servlet-name>
         <url-pattern>/ViewRequestList</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AcceptRequestServlet</servlet-name>
+        <url-pattern>/AcceptRequest</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

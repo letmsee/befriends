@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package servlet;
+package servlet.managefriend;
 
 import business.Account;
 import data.access.FriendDAO;
@@ -15,12 +15,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import servlet.MyServlet;
 
 /**
  *
  * @author duongna
  */
-public class AddFriendServlet extends HttpServlet {
+public class AddFriendServlet extends MyServlet {
 
     /**
      * Processes requests for both HTTP
@@ -56,10 +57,19 @@ public class AddFriendServlet extends HttpServlet {
             return;
         }
         
-        // check if request is sent
+        // check if User's request is sent before
         if (RequestDAO.accountInRequest(targetId, requestId)) {
-            // request is already sent
-            String message = "Request already sent before";
+            // User's request is already sent
+            String message = "Your request already sent before";
+            request.setAttribute("message", message);
+            gotoPage(request, response, "/search_by_username.jsp");
+            return;
+        }
+        
+        // check if target User's request is sent before
+        if (RequestDAO.accountInRequest(requestId, targetId)) {
+            // Target User's request is already sent
+            String message = "You are sent request by him/her before";
             request.setAttribute("message", message);
             gotoPage(request, response, "/search_by_username.jsp");
             return;

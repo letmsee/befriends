@@ -2,16 +2,15 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package servlet;
+package servlet.managefriend;
 
 import business.Account;
-import data.access.AccountDAO;
+import data.access.RequestDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,8 +20,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author duongna
  */
-@WebServlet(name = "SearchByUsername", urlPatterns = {"/SearchByUsernameServlet"})
-public class SearchByUsernameServlet extends HttpServlet {
+public class ViewRequestListServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP
@@ -36,7 +34,7 @@ public class SearchByUsernameServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // check whether user is log
+         // check whether user is log in
         HttpSession session = request.getSession();
         Account accTmp = (Account) session.getAttribute("account");
         if (accTmp == null) {
@@ -46,14 +44,16 @@ public class SearchByUsernameServlet extends HttpServlet {
             gotoPage(request, response, "/login.jsp");
             return;
         }
+        
+        ArrayList<Account> requestList = RequestDAO.getRequestList(accTmp.getAccountId());
+        request.setAttribute("requestList", requestList);
+        for (Account acc: requestList) {
+        }
                 
-        String usernameToFind = request.getParameter("usernameToFind");
-        ArrayList<Account> seachResult = AccountDAO.searchByUsername(usernameToFind);
-        request.setAttribute("searchResult", seachResult);
-        gotoPage(request, response, "/search_by_username.jsp");
+        gotoPage(request, response, "/view_request_list.jsp");
     }
-    
-    /*
+
+     /**
      * go to page with original request and response
      */
     public void gotoPage(HttpServletRequest request, HttpServletResponse response,
@@ -61,7 +61,6 @@ public class SearchByUsernameServlet extends HttpServlet {
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(urlTarget);
         dispatcher.forward(request, response);
     }
-    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP
