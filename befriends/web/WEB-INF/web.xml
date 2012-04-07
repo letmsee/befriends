@@ -24,6 +24,10 @@
         <servlet-name>DenyRequestServlet</servlet-name>
         <servlet-class>servlet.managefriend.DenyRequestServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ViewWaitingListServlet</servlet-name>
+        <servlet-class>servlet.managefriend.ViewWaitingListServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SearchByUsernameServlet</servlet-name>
         <url-pattern>/SearchByUsername</url-pattern>
@@ -74,6 +78,10 @@
     <servlet-mapping>
         <servlet-name>DenyRequestServlet</servlet-name>
         <url-pattern>/DenyRequest</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewWaitingListServlet</servlet-name>
+        <url-pattern>/ViewWaitingList</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
