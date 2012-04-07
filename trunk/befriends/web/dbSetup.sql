@@ -30,3 +30,11 @@ requestId int,
 CONSTRAINT FOREIGN KEY (targetId) REFERENCES Account(accountId),
 CONSTRAINT FOREIGN KEY (requestId) REFERENCES Account(accountId),
 CONSTRAINT PRIMARY KEY (targetId, requestId));
+
+/* create table for denial */
+CREATE TABLE Denial (
+denierId int,
+requestId int,
+CONSTRAINT FOREIGN KEY (denierId) REFERENCES Account(accountId),
+CONSTRAINT FOREIGN KEY (requestId) REFERENCES Account(accountId),
+CONSTRAINT PRIMARY KEY (denierId, requestId));
