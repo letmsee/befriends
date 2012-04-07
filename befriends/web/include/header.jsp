@@ -23,7 +23,8 @@
                 <td>
             <li><a href="register_to_web.jsp">register</a></li>
             <li><a href="login.jsp">login</a></li>
-            <li><a href="Logout">logout</a>
+            <li><a href="Logout">logout</a></li>
+            <li><a href="ViewRequestList">View Request List</a></li>
                 </td>
                 </tr>
             <tr>
