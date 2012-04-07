@@ -7,6 +7,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:import url="/include/header.jsp"/>
+<h3>Add friend message: ${message}</h3>
 <h2>Search result ${fn:length(searchResult)} </h2>
 <c:if test="${fn:length(searchResult) == 0}">
     <h3><b>Not found</b></h3>
@@ -20,6 +21,12 @@
                     Username: ${acc.username}<br>
                     Age: ${acc.age}<br>
                     School: ${acc.school}
+                </td>
+                <td>
+                    <form action="AddFriend">
+                        <input type="submit" value="Add Friend">
+                        <input type="hidden" name="targetId" value="${acc.accountId}">
+                    </form>
                 </td>
             </tr>
         </c:forEach>

@@ -11,6 +11,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -80,7 +83,10 @@ public class AccountDAO extends DataDAO {
             preStatement.setString(2, acc.getPassword());
             preStatement.setString(3, acc.getEmailAddress());
             preStatement.setString(4, acc.getGender());
-            preStatement.setString(5, acc.getBirthday());
+            
+            // set birthday
+            String birthdayStr = new SimpleDateFormat("yyyy/mm/dd").format(acc.getBirthday());
+            preStatement.setString(5, birthdayStr);
             preStatement.executeUpdate();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -144,6 +150,49 @@ public class AccountDAO extends DataDAO {
             else {
                 return null;
             }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return null;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
+    
+    /*
+     * Use usename to search account that has similar usernames in the system
+     * @return the list of accounts as the search result
+     */
+    public static ArrayList<Account> searchByUsername(String username) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            String sqlCode = 
+                    "SELECT * FROM Account " +
+                    "WHERE username LIKE ? " +
+                    "ORDER BY (username) ASC";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setString(1, username + "%");
+            ResultSet resultSet = preStatement.executeQuery();
+
+            ArrayList<Account> list = new ArrayList<Account>();
+            while (resultSet.next()) {
+                Account acc = new Account();
+                acc.setAccountId(resultSet.getInt("accountId"));
+                acc.setUsername(resultSet.getString("username"));
+              //  acc.setSchool(resultSet.getString("school"));
+                acc.setBirthday(resultSet.getDate("birthday"));
+                
+                // compute age
+                SimpleDateFormat formatYear = new SimpleDateFormat("yyyy");
+                int birthYear = Integer.parseInt(
+                        formatYear.format(acc.getBirthday()) );
+                int currentYear = Integer.parseInt(
+                        formatYear.format(new Date()) );
+                acc.setAge(currentYear - birthYear);
+                list.add(acc);
+            }
+            return list;
         } catch (SQLException sqle) {
             sqle.printStackTrace();
             return null;

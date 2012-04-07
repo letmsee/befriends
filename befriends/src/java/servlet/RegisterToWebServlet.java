@@ -7,8 +7,12 @@ package servlet;
 import business.Account;
 import data.access.AccountDAO;
 import java.io.IOException;
-import java.sql.Date;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -40,7 +44,6 @@ public class RegisterToWebServlet extends HttpServlet {
         if (acc != null) {
             log("user already logged");
             // that means user already logged, so go to his home page
-            session.invalidate();
             response.sendRedirect("home.jsp");
             return;
         }         
@@ -52,7 +55,14 @@ public class RegisterToWebServlet extends HttpServlet {
         String month = request.getParameter("month");
         String day = request.getParameter("day");
         String year = request.getParameter("year");
-        String birthday = year + "/" + month + "/" + day;
+        Date birthday = null;
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy/mm/dd");
+        try {
+            birthday = formater.parse(year + "/" + month + "/" + day);
+            log("birthday: " + birthday);
+        } catch (ParseException ex) {
+            Logger.getLogger(RegisterToWebServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         acc = new Account();
         acc.setUsername(username);

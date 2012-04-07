@@ -31,6 +31,10 @@
     <welcome-file-list>
         <welcome-file>/register_to_web.jsp</welcome-file>
     </welcome-file-list>
+    <servlet>
+        <servlet-name>AddFriendServlet</servlet-name>
+        <servlet-class>servlet.AddFriendServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RegisterToWebServlet</servlet-name>
         <url-pattern>/RegisterToWeb</url-pattern>
@@ -42,6 +46,10 @@
     <servlet-mapping>
         <servlet-name>LogoutServlet</servlet-name>
         <url-pattern>/Logout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddFriendServlet</servlet-name>
+        <url-pattern>/AddFriend</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

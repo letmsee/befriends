@@ -46,7 +46,7 @@
                 </select>
                 <select name="year">
                     <option>Year</option>
-                    <c:forEach begin="1900" end="2012" varStatus="status">
+                    <c:forEach begin="1980" end="2012" varStatus="status">
                         <option>${status.index}</option>
                     </c:forEach>
                 </select>
