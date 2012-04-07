@@ -114,6 +114,38 @@ public class RequestDAO extends DataDAO {
             freeDbResouce(preStatement, null, connection, pool);
         }
     }
+    
+    /**
+     * delete an request from Request table
+     * @param targetId - accountId of target user in request
+     * @param requestId - accountId of requesting people
+     * @return true if success
+     */
+    public static boolean deleteRequest(int targetId, int requestId) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            String sqlCode =
+                    "DELETE FROM Request " +
+                    "WHERE targetId = ? AND requestId = ?";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, targetId);
+            preStatement.setInt(2, requestId);
+            int nRows = preStatement.executeUpdate();
+            if (nRows > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return false;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
+    
 }
     
 

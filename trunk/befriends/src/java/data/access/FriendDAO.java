@@ -49,4 +49,35 @@ public class FriendDAO extends DataDAO {
             freeDbResouce(preStatement, null, connection, pool);
         }
     }
+    
+    /**
+     * add friend relation into table Friend
+     * @param accountId1 - account of first user
+     * @param accountId2 - account of second user
+     * @return true if success
+     */
+    public static boolean addFriends(int accountId1, int accountId2) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            String sqlCode = 
+                    "INSERT INTO Friend VALUES " +
+                    "(?, ?)";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId1);
+            preStatement.setInt(2, accountId2);
+            int nRows = preStatement.executeUpdate();
+            if (nRows > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException sqle)  {
+            sqle.printStackTrace();
+            return false;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
 }

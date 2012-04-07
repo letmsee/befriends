@@ -12,6 +12,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.omg.PortableServer.REQUEST_PROCESSING_POLICY_ID;
 
 /**
  *
@@ -21,20 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 public class MyServlet extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP
-     * <code>GET</code> and
-     * <code>POST</code> methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {       
-    }
-    
-     /**
      * go to page with original request and response
      */
     public void gotoPage(HttpServletRequest request, HttpServletResponse response,
@@ -43,37 +31,23 @@ public class MyServlet extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
+    /**
+     * check if User is logged in
+     * @param request - HttpServletRequest object
+     * @param attr - attribute name used to get from session and check log in
+     * @return true if login
+     */
+    public boolean isLoggedin(HttpServletRequest request, String attr) throws ServletException {
+        HttpSession session = request.getSession();
+        if (session.getAttribute(attr) != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP
-     * <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Handles the HTTP
-     * <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
+  
     /**
      * Returns a short description of the servlet.
      *
