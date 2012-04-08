@@ -32,7 +32,7 @@
         <tr>
             <td>Birthday</td>
             <td>
-                <select name="month">
+                <select name="month" >
                     <option>Month</option>
                     <c:forEach begin="1" end="12" varStatus="status">
                         <option>${status.index}</option>
