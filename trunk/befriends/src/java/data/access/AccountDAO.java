@@ -6,6 +6,7 @@
 package data.access;
 
 import business.Account;
+import com.sun.corba.se.impl.orb.PrefixParserAction;
 import data.pool.ConnectionPool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.MatchResult;
 
 /**
  *
@@ -76,17 +78,18 @@ public class AccountDAO extends DataDAO {
         try {
             String sqlCode =
                     "INSERT INTO Account " +
-                    "(username, password, emailAddress, gender, birthday) VALUES " +
-                    "(?, ?, ?, ?, ?)";
+                    "(username, password, emailAddress, gender, birthday, avatar) VALUES " +
+                    "(?, ?, ?, ?, ?, ?)";
             preStatement = connection.prepareStatement(sqlCode);
             preStatement.setString(1, acc.getUsername());
             preStatement.setString(2, acc.getPassword());
             preStatement.setString(3, acc.getEmailAddress());
             preStatement.setString(4, acc.getGender());
-            
+
             // set birthday
             String birthdayStr = new SimpleDateFormat("yyyy/mm/dd").format(acc.getBirthday());
             preStatement.setString(5, birthdayStr);
+            preStatement.setString(6, acc.getAvatar());
             preStatement.executeUpdate();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -189,4 +192,92 @@ public class AccountDAO extends DataDAO {
             freeDbResouce(preStatement, null, connection, pool);
         }
     }
+    
+    /**
+     * Retrieve personal info from database
+     * @param accountId - id of person to get info
+     * @return Account object containing all personal info
+     */
+    public static Account getPersonalInfo(int accountId) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            Account acc = new Account();
+            
+            // get basis information
+            String sqlCode = 
+                    "SELECT * FROM Account " +
+                    "WHERE accountId = ? ";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            ResultSet resultSet = preStatement.executeQuery();
+            if (resultSet.next()) {
+                acc.setBasicInfo(resultSet);
+            }
+            
+            resultSet.close();
+            preStatement.close();
+            // get hobby info
+            sqlCode = 
+                    "SELECT * FROM Hobby " +
+                    "WHERE accountId = ?";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            resultSet = preStatement.executeQuery();
+            acc.setHobbyInfo(resultSet);
+            
+            resultSet.close();
+            preStatement.close();
+            // get dislike info
+            sqlCode = 
+                    "SELECT * FROM Dislike " +
+                    "WHERE accountId = ?";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            resultSet = preStatement.executeQuery();
+            acc.setDislikeInfo(resultSet);
+            
+      /*      resultSet.close();
+            preStatement.close();
+            // get career info
+            sqlCode = 
+                    "SELECT * FROM Career " +
+                    "WHERE accountId = ?";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            resultSet = preStatement.executeQuery();
+            if (resultSet.next()) {
+                acc.setCareerInfo(resultSet);
+            }
+            
+            resultSet.close();
+            preStatement.close();
+            // get location info
+            sqlCode = 
+                    "SELECT * FROM Location " +
+                    "WHERE accountId = ?";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            resultSet = preStatement.executeQuery();
+            if (resultSet.next()) {
+                acc.setLocationInfo(resultSet);
+            } */
+
+            return acc;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return null;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
+    
+    /**
+     * Search users that appropriate to the given User by 
+     * using matching algorithm
+     */
+//    public static MatchResult searchMatching(int accountId) {
+//        
+//    }
 }

@@ -35,7 +35,7 @@ public class ViewFriendListServlet extends MyServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         if (!isLoggedin(request, "account")) {
-            requireLogin(request, response, "/login.jsp");
+            requireLogin(request, response);
             return;
         }
         

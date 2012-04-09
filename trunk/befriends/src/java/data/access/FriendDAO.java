@@ -115,4 +115,38 @@ public class FriendDAO extends DataDAO {
             freeDbResouce(preStatement, null, connection, pool);
         }
     }
+    
+    /**
+     * delete a friend relationship
+     * @param accountId1 - accountId of first person
+     * @param accountId2 - accountId of second person
+     * @return true if success
+     */
+    public static boolean deleteFriend(int accountId1, int accountId2) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            String sqlCode = 
+                    "DELETE FROM Friend " +
+                    "WHERE (accountId1 = ? AND accountId2 = ?) OR " +
+                    "      (accountId1 = ? AND accountId2 = ?)";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId1);
+            preStatement.setInt(2, accountId2);
+            preStatement.setInt(3, accountId2);
+            preStatement.setInt(4, accountId1);
+            int nRows = preStatement.executeUpdate();
+            if (nRows > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return false;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
 }

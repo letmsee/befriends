@@ -19,10 +19,17 @@
         <c:forEach var="acc" items="${searchResult}">
             <tr>
                 <td>
-                    Username: ${acc.username}<br>
+                    <img src="${acc.avatar}" height="100" width="100">
+                </td>
+                <td>
+                    <a href="
+                       <c:url value="/ViewPersonalInfo">
+                           <c:param name="accountId" value="${acc.accountId}"/>
+                       </c:url>
+                       ">Username: ${acc.username}</a><br>
                     Age: ${acc.age}<br>
                     Gender: ${acc.gender}<br>
-                    School: ${acc.school}
+                    School: ${acc.career.school}
                 </td>
                 <td>
                     <form action="AddFriend">
