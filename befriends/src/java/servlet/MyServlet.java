@@ -49,11 +49,11 @@ public class MyServlet extends HttpServlet {
     /**
      * require User to log in
      */
-    public void requireLogin(HttpServletRequest request, HttpServletResponse response, String loginUrl) 
+    public void requireLogin(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         String message = "You must login before using any service";
         request.setAttribute("message", message);
-        gotoPage(request, response, loginUrl);
+        gotoPage(request, response, "/login.jsp");
     }
     
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

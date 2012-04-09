@@ -5,10 +5,9 @@
 package servlet.managefriend;
 
 import business.Account;
-import data.access.RequestDAO;
+import data.access.FriendDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +19,7 @@ import servlet.MyServlet;
  *
  * @author duongna
  */
-public class ViewWaitingListServlet extends MyServlet {
+public class DeleteFriendServlet extends MyServlet {
 
     /**
      * Processes requests for both HTTP
@@ -39,14 +38,29 @@ public class ViewWaitingListServlet extends MyServlet {
             return;
         }
         
-        // get User's accountId
+        // get accountId of user and user's friend
         HttpSession session = request.getSession();
         Account acc = (Account) session.getAttribute("account");
-        int accountId = acc.getAccountId();
-        ArrayList<Account> waitingList = RequestDAO.getWaitingList(accountId);
-
-        request.setAttribute("waitingList", waitingList);
-        gotoPage(request, response, "/view_waiting_list.jsp");
+        int userId = acc.getAccountId();
+        int friendId = Integer.parseInt(request.getParameter("friendId"));
+        
+        String url = "/view_friend_list.jsp";
+        String message = "";
+        
+        // check if two users are friends now
+        if (FriendDAO.areFriends(userId, friendId)) {
+            // delete friend relationship
+            if (FriendDAO.deleteFriend(userId, friendId)) {
+                message = "Delete successfully";
+            } else {
+                message = "Error at database";
+            }
+        } else {
+            message = "Error: you are not friends any more";
+        }
+        
+        request.setAttribute("message", message);
+        gotoPage(request, response, url);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

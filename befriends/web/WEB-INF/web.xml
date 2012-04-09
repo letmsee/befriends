@@ -32,6 +32,14 @@
         <servlet-name>ViewFriendListServlet</servlet-name>
         <servlet-class>servlet.managefriend.ViewFriendListServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DeleteFriendServlet</servlet-name>
+        <servlet-class>servlet.managefriend.DeleteFriendServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ViewPersonalInfoServlet</servlet-name>
+        <servlet-class>servlet.manageinfo.ViewPersonalInfoServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SearchByUsernameServlet</servlet-name>
         <url-pattern>/SearchByUsername</url-pattern>
@@ -90,6 +98,14 @@
     <servlet-mapping>
         <servlet-name>ViewFriendListServlet</servlet-name>
         <url-pattern>/ViewFriendList</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteFriendServlet</servlet-name>
+        <url-pattern>/DeleteFriend</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewPersonalInfoServlet</servlet-name>
+        <url-pattern>/ViewPersonalInfo</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

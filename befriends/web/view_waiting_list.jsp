@@ -18,7 +18,7 @@
                     Username: ${acc.username}<br>
                     Age: ${acc.age}<br>
                     Gender: ${acc.gender}<br>
-                    School: ${acc.school}
+                    School: ${acc.career.school}
                 </td>
             </tr>
         </c:forEach>

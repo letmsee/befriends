@@ -8,6 +8,7 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:import url="/include/header.jsp"/>
 
+<h2><font color="red">DeleteFriend message: ${message} </font></h2>
 <h2>Waiting List (${fn:length(friendList)})</h2>
 <c:if test="${fn:length(friendList) > 0}">
     
@@ -18,7 +19,13 @@
                     Username: ${acc.username}<br>
                     Age: ${acc.age}<br>
                     Gender: ${acc.gender}<br>
-                    School: ${acc.school}
+                    School: ${acc.career.school}
+                </td>
+                <td>
+                    <form action="DeleteFriend">
+                        <input type="submit" value="Delete">
+                        <input type="hidden" name="friendId" value="${acc.accountId}">
+                    </form>
                 </td>
             </tr>
         </c:forEach>
