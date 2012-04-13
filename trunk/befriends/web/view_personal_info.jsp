@@ -15,10 +15,6 @@
 <h2>Basic info</h2>
 <table>
     <tr>
-        <td>Avatar url: </td>
-        <td><input type="text" name="avatar" value="${account.avatar}"></td>
-    </tr>
-    <tr>
         <td>Username:</td>
         <td>${account.username}</td>
     </tr>
@@ -28,80 +24,16 @@
     </tr>
     <tr>
         <%-- display birthday --%>
-        <%
-               Account acc = (Account) request.getAttribute("account");
-               Date birthday = acc.getBirthday();
-               SimpleDateFormat formater = new SimpleDateFormat("dd");
-               int day = Integer.parseInt(
-                       formater.format(birthday));
-
-               formater = new SimpleDateFormat("mm");
-               int month = Integer.parseInt(
-                       formater.format(birthday));
-               
-               formater = new SimpleDateFormat("yyyy");
-               int year = Integer.parseInt(
-                       formater.format(birthday));
-               
-               request.setAttribute("day", day);
-               request.setAttribute("month", month);
-               request.setAttribute("year", year);
-        %>
         <td>Birthday</td>
-        <td>
-            <select name="day">
-                <c:forEach begin="1" end="30" varStatus="status">
-                    <c:if test="${day == status.index}">
-                        <option selected>${status.index}</option>
-                    </c:if>
-                    <c:if test="${day != status.index}">
-                        <option>${status.index}</option>
-                    </c:if>
-                </c:forEach>
-            </select>
-            
-            <select name="month" >
-                <c:forEach begin="1" end="12" varStatus="status">
-                    <c:if test="${month == status.index}">
-                        <option selected>${status.index}</option>
-                    </c:if>
-                    <c:if test="${month != status.index}">
-                        <option>${status.index}</option>
-                    </c:if>
-                </c:forEach>
-            </select>
-            
-            <select name="year">
-                <option>Year</option>
-                <c:forEach begin="1980" end="2012" varStatus="status">
-                    <c:if test="${year == status.index}">
-                        <option selected>${status.index}</option>
-                    </c:if>
-                    <c:if test="${year != status.index}">
-                        <option>${status.index}</option>
-                    </c:if>
-                </c:forEach>
-            </select>
-        </td>                
+        <td>${account.birthday}</td>
     </tr>
-    
     <tr>
         <td>Gender</td>
-        <td>
-            <c:if test="${account.gender == male}">
-                <input type="radio" name="gender" value="male" checked>Male
-            </c:if>
-            
-            <input type="radio" name="gender" value="female" checked="${account.gender == female}">Female
-        </td>
+        <td>${account.gender}</td>
     </tr>
     <tr>
         <td>Interested Gender:</td>
-        <td>
-            <input type="radio" name="interestedGender" value="male" checked="checked">Male
-            <input type="radio" name="interestedGender" value="female">Female
-            <input type="radio" name="interestedGender" value="both">Both
-        </td>
+        <td>${account.interestGender}</td>
     </tr>
 </table>
 
