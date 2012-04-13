@@ -9,12 +9,15 @@
 <c:import url="/include/header.jsp"/>
 
 <h2><font color="red">DeleteFriend message: ${message} </font></h2>
-<h2>Waiting List (${fn:length(friendList)})</h2>
+<h2>Friend List (${totalResults})</h2>
 <c:if test="${fn:length(friendList) > 0}">
     
     <table border="1">
         <c:forEach var="acc" items="${friendList}">
             <tr>
+                <td>
+                    <img scr="${acc.avatar}" height="100" width="100" >
+                </td>
                 <td>
                     Username: ${acc.username}<br>
                     Age: ${acc.age}<br>
@@ -30,6 +33,11 @@
             </tr>
         </c:forEach>
     </table>
-    
+</c:if>
+<c:if test="${fn:length(friendList) < totalResults}">
+    <form action="ViewFriendList">
+        <input type="submit" value="More Results">
+        <input type="hidden" name="numOfResults" value="${fn:length(friendList) + incrementOfResults}">
+    </form>
 </c:if>
 <c:import url="/include/footer.jsp"/>

@@ -9,7 +9,8 @@
 <c:import url="/include/header.jsp"/>
 <h3><font color="red">Add friend message: ${message}</font></h3>
 
-<h2>Search result ${fn:length(searchResult)} </h2>
+
+<h2>Search result ${totalResults} </h2>
 <c:if test="${fn:length(searchResult) == 0}">
     <h3><b>Not found</b></h3>
 </c:if>
@@ -40,6 +41,13 @@
             </tr>
         </c:forEach>
     </table>
+</c:if>
+<c:if test="${fn:length(searchResult) < totalResults}">
+    <form action="SearchByUsername">
+        <input type="submit" value="More Results">
+        <input type="hidden" name="numOfResults" value="${fn:length(searchResult) + incrementOfResults}">
+        <input type="hidden" name="usernameToFind" value="${usernameToFind}">
+    </form>
 </c:if>
 <c:import url="/include/footer.jsp"/>
 

@@ -6,6 +6,7 @@
 package data.access;
 
 import business.Account;
+import business.MatchingResult;
 import com.sun.corba.se.impl.orb.PrefixParserAction;
 import data.pool.ConnectionPool;
 import java.sql.Connection;
@@ -78,8 +79,8 @@ public class AccountDAO extends DataDAO {
         try {
             String sqlCode =
                     "INSERT INTO Account " +
-                    "(username, password, emailAddress, gender, birthday, avatar) VALUES " +
-                    "(?, ?, ?, ?, ?, ?)";
+                    "(username, password, emailAddress, gender, birthday, avatar, interestGender) VALUES " +
+                    "(?, ?, ?, ?, ?, ?, ?)";
             preStatement = connection.prepareStatement(sqlCode);
             preStatement.setString(1, acc.getUsername());
             preStatement.setString(2, acc.getPassword());
@@ -90,6 +91,7 @@ public class AccountDAO extends DataDAO {
             String birthdayStr = new SimpleDateFormat("yyyy/mm/dd").format(acc.getBirthday());
             preStatement.setString(5, birthdayStr);
             preStatement.setString(6, acc.getAvatar());
+            preStatement.setString(7, acc.getInterestGender());
             preStatement.executeUpdate();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -127,7 +129,7 @@ public class AccountDAO extends DataDAO {
         }
     }
     
-    /*
+     /*
      * fills all basic information retrieved from database for account
      * basic information: accountId, username, emailAddress
      * @return Account that contain all information retrieve from database
@@ -145,9 +147,39 @@ public class AccountDAO extends DataDAO {
             preStatement.setString(2, acc.getPassword());
             ResultSet resultSet = preStatement.executeQuery();
             if (resultSet.next()) {
-                acc.setAccountId(resultSet.getInt("accountId"));
-                acc.setEmailAddress(resultSet.getString("emailAddress"));
-                acc.setPassword(null);
+                acc.setBasicInfo(resultSet);
+                return acc;
+            }
+            else {
+                return null;
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return null;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
+  
+      /*
+     * fills all basic information retrieved from database for account
+     * basic information: accountId, username, emailAddress
+     * @return Account that contain all information retrieve from database
+     */
+    public static Account getAccount(int accountId) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            String sqlCode = 
+                    "SELECT * FROM Account " +
+                    "WHERE accountId = ?";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            ResultSet resultSet = preStatement.executeQuery();
+            if (resultSet.next()) {
+                Account acc = new Account();
+                acc.setBasicInfo(resultSet);
                 return acc;
             }
             else {
@@ -161,7 +193,7 @@ public class AccountDAO extends DataDAO {
         }
     }
     
-    /*
+     /*
      * Use usename to search account that has similar usernames in the system
      * @return the list of accounts as the search result
      */
@@ -176,6 +208,42 @@ public class AccountDAO extends DataDAO {
                     "ORDER BY (username) ASC";
             preStatement = connection.prepareStatement(sqlCode);
             preStatement.setString(1, username + "%");
+            ResultSet resultSet = preStatement.executeQuery();
+
+            ArrayList<Account> list = new ArrayList<Account>();
+            while (resultSet.next()) {
+                Account acc = new Account();
+                acc.setBasicInfo(resultSet);
+                list.add(acc);
+            }
+            return list;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return null;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
+    
+     /*
+     * Use usename to search account that has similar usernames in the system
+     * @param accountId - accountId of the account
+     * @param limitOfResults - the maximum number of results
+     * @return the list of accounts as the search result
+     */
+    public static ArrayList<Account> searchByUsername(String username, int limitOfResults) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            String sqlCode = 
+                    "SELECT * FROM Account " +
+                    "WHERE username LIKE ? " +
+                    "ORDER BY (username) ASC" +
+                    "LIMIT ?";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setString(1, username + "%");
+            preStatement.setInt(2, limitOfResults);
             ResultSet resultSet = preStatement.executeQuery();
 
             ArrayList<Account> list = new ArrayList<Account>();
@@ -238,7 +306,7 @@ public class AccountDAO extends DataDAO {
             resultSet = preStatement.executeQuery();
             acc.setDislikeInfo(resultSet);
             
-      /*      resultSet.close();
+           resultSet.close();
             preStatement.close();
             // get career info
             sqlCode = 
@@ -262,7 +330,7 @@ public class AccountDAO extends DataDAO {
             resultSet = preStatement.executeQuery();
             if (resultSet.next()) {
                 acc.setLocationInfo(resultSet);
-            } */
+            } 
 
             return acc;
         } catch (SQLException sqle) {
@@ -277,7 +345,18 @@ public class AccountDAO extends DataDAO {
      * Search users that appropriate to the given User by 
      * using matching algorithm
      */
-//    public static MatchResult searchMatching(int accountId) {
-//        
-//    }
+//   public static MatchingResult searchMatch(int accountId) {
+//       ConnectionPool pool = ConnectionPool.getInstance();
+//       Connection connection = pool.getConnection();
+//       PreparedStatement preStatement = null;
+//       try {
+//           Account accForm = AccountDAO.getAccount(accountId);
+//           
+//           MatchingResult matchingResult = new MatchingResult();
+//           
+//           // get all user account into MatchResult
+//           String sqlCode = 
+//                   "SELECT * FROM Account";
+//       }
+//   }
 }

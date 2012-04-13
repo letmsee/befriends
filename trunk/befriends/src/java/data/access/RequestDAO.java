@@ -92,7 +92,8 @@ public class RequestDAO extends DataDAO {
                     "SELECT acc.* " +
                     "FROM Request as req, Account as acc " +
                     "WHERE req.targetId = ? AND " +
-                    "      acc.accountId = req.requestId";
+                    "      acc.accountId = req.requestId " +
+                    "ORDER BY acc.username";
             preStatement = connection.prepareStatement(sqlCode);
             preStatement.setInt(1, accountId);
             ResultSet resultSet = preStatement.executeQuery();
@@ -160,7 +161,8 @@ public class RequestDAO extends DataDAO {
             String sqlCode =
                     "SELECT acc.* " +
                     "FROM Account as acc, Request as req " +
-                    "WHERE req.requestId = ? AND acc.accountId = req.targetId";
+                    "WHERE req.requestId = ? AND acc.accountId = req.targetId " +
+                    "ORDER BY acc.username ";
             preStatement = connection.prepareStatement(sqlCode);
             preStatement.setInt(1, requestId);
             ResultSet resultSet = preStatement.executeQuery();
@@ -179,6 +181,67 @@ public class RequestDAO extends DataDAO {
         }
     }
     
+    /**
+     * get number of request sent to the account
+     * @param accountId - accountId of the account
+     * @return number of request
+     */
+    public static int getNumOfRequests(int accountId) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            String sqlCode =
+                    "SELECT count(requestId) as numOfRequest " +
+                    "FROM Request " +
+                    "WHERE targetId = ? " +
+                    "GROUP BY targetId";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            ResultSet resultSet = preStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("numOfRequest");
+            } else {
+                return 0;
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return 0;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
+    
+    /**
+     * get number of accounts that the account is waiting for their accepts
+     * @param accountId - accountId of the account
+     * @return number of accounts that the account is waiting for their accepts
+     */
+    public static int getNumOfWaitings(int accountId) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            String sqlCode =
+                    "SELECT count(targetId) as numOfWaitings " +
+                    "FROM Request " +
+                    "WHERE requestId = ? " +
+                    "GROUP BY requestId";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            ResultSet resultSet = preStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("numOfWaitings");
+            } else {
+                return 0;
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return 0;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
 }
     
 

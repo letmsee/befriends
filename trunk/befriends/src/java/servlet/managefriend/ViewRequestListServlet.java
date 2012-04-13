@@ -46,10 +46,31 @@ public class ViewRequestListServlet extends HttpServlet {
         }
         
         ArrayList<Account> requestList = RequestDAO.getRequestList(accTmp.getAccountId());
-        request.setAttribute("requestList", requestList);
-        for (Account acc: requestList) {
+        
+        // get number of results will be displayed
+        String tmp = request.getParameter("numOfResults");
+        int numOfResult = 0;
+        int incrementOfResults = Integer.parseInt(
+                getServletContext().getInitParameter("incrementOfResults"));
+        if (tmp == null) {
+            numOfResult = incrementOfResults;
+        } else {
+            numOfResult = Integer.parseInt(tmp);
         }
-                
+        
+        int totalResults = requestList.size();
+        if (numOfResult < totalResults) {
+            for (int i = totalResults-1; i >= numOfResult; i--) {
+                requestList.remove(i);
+            }
+        } else {
+            numOfResult = totalResults;
+        }
+        
+        request.setAttribute("numOfResult", numOfResult);
+        request.setAttribute("totalResults", totalResults);
+        request.setAttribute("incrementOfResults", incrementOfResults);
+        request.setAttribute("requestList", requestList);
         gotoPage(request, response, "/view_request_list.jsp");
     }
 

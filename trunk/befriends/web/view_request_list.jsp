@@ -8,12 +8,15 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:import url="/include/header.jsp"/>
 <h2><font color="red">message: ${message}</font></h2>
-<h2>Request List (${fn:length(requestList)})</h2>
+<h2>Request List (${totalResults})</h2>
 <c:if test="${fn:length(requestList) > 0}">
     
     <table border="1">
         <c:forEach var="acc" items="${requestList}">
             <tr>
+                <td>
+                    <img src="${acc.avatar}" height="100" width="100">
+                </td>
                 <td>
                     Username: ${acc.username}<br>
                     Age: ${acc.age}<br>
@@ -36,5 +39,11 @@
         </c:forEach>
     </table>
     
+</c:if>
+<c:if test="${fn:length(requestList) < totalResults}">
+    <form action="ViewRequestList">
+        <input type="submit" value="More Results">
+        <input type="hidden" name="numOfResults" value="${fn:length(requestList) + incrementOfResults}">
+    </form>
 </c:if>
 <c:import url="/include/footer.jsp"/>

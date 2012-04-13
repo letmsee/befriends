@@ -66,7 +66,10 @@ public class DenyRequestServlet extends MyServlet {
             // denial to User's denial listt
             DenialDAO.addDenial(denierId, requestId);
         }
+
         
+        // success
+        acc.setNumOfRequests(acc.getNumOfRequests()-1);
         message = "Deny successfully";
         request.setAttribute("message", message);
         gotoPage(request, response, url);

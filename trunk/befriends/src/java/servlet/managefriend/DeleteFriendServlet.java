@@ -52,6 +52,8 @@ public class DeleteFriendServlet extends MyServlet {
             // delete friend relationship
             if (FriendDAO.deleteFriend(userId, friendId)) {
                 message = "Delete successfully";
+                // success
+                acc.setNumOfFriends(acc.getNumOfFriends()-1);
             } else {
                 message = "Error at database";
             }
