@@ -85,6 +85,9 @@ public class AddFriendServlet extends MyServlet {
         }
         else {
             // successfull
+            Account acc = (Account) session.getAttribute("account");
+            acc.setNumOfRequests(acc.getNumOfRequests() + 1);
+                    
             String message = "Request is sent";
             request.setAttribute("message", message);
             gotoPage(request, response, "/search_by_username.jsp");

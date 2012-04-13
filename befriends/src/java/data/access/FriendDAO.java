@@ -30,13 +30,16 @@ public class FriendDAO extends DataDAO {
         try {
             String sqlCode =
                     "SELECT * FROM Friend " +
-                    "WHERE (accountId1 = ? AND accountId2 = ?) OR " +
-                    "      (accountId1 = ? AND accountId2 = ?) ";
+                    "WHERE accountId1 = ? AND accountId2 = ?";
+                                    
             preStatement = connection.prepareStatement(sqlCode);
-            preStatement.setInt(1, accountId1);
-            preStatement.setInt(2, accountId2);
-            preStatement.setInt(3, accountId2);
-            preStatement.setInt(4, accountId1);
+            if (accountId1 < accountId2) {
+                preStatement.setInt(1, accountId1);
+                preStatement.setInt(2, accountId2);
+            } else {
+                preStatement.setInt(1, accountId2);
+                preStatement.setInt(2, accountId1);
+            }
             ResultSet resultSet = preStatement.executeQuery();
             if (resultSet.next()) {
                 return true;
@@ -67,8 +70,14 @@ public class FriendDAO extends DataDAO {
                     "INSERT INTO Friend VALUES " +
                     "(?, ?)";
             preStatement = connection.prepareStatement(sqlCode);
-            preStatement.setInt(1, accountId1);
-            preStatement.setInt(2, accountId2);
+            if (accountId1 < accountId2) {
+                preStatement.setInt(1, accountId1);
+                preStatement.setInt(2, accountId2);
+            } else {
+                preStatement.setInt(1, accountId2);
+                preStatement.setInt(2, accountId1);
+            }
+            
             int nRows = preStatement.executeUpdate();
             if (nRows > 0) {
                 return true;
@@ -95,7 +104,8 @@ public class FriendDAO extends DataDAO {
                     "SELECT acc.* " +
                     "FROM Account as acc, Friend as fr " +
                     "WHERE (fr.accountId1 = ? AND acc.accountId = fr.accountId2) OR " +
-                    "      (fr.accountId2 = ? AND acc.accountId = fr.accountId1)";
+                    "      (fr.accountId2 = ? AND acc.accountId = fr.accountId1)" +
+                    "ORDER BY username";
             preStatement = connection.prepareStatement(sqlCode);
             preStatement.setInt(1, accountId);
             preStatement.setInt(2, accountId);
@@ -145,6 +155,35 @@ public class FriendDAO extends DataDAO {
         } catch (SQLException sqle) {
             sqle.printStackTrace();
             return false;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
+    
+    /**
+     * get number of friends
+     * @param accountId - accountId of the account
+     */
+    public static int getNumOfFriends(int accountId) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            String sqlCode = 
+                    "SELECT * FROM Friend " +
+                    "WHERE accountId1 = ? OR accountId2 = ?";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            preStatement.setInt(2, accountId);
+            ResultSet resultSet = preStatement.executeQuery();
+            if (resultSet.last()) {
+                return resultSet.getRow();
+            } else {
+                return 0;
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return 0;
         } finally {
             freeDbResouce(preStatement, null, connection, pool);
         }

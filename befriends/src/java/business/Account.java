@@ -6,6 +6,8 @@ package business;
 
 import com.sun.org.apache.regexp.internal.RE;
 import com.sun.xml.internal.fastinfoset.stax.events.ReadIterator;
+import data.access.FriendDAO;
+import data.access.RequestDAO;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,13 +33,17 @@ public class Account implements Serializable {
     private String status;
     private String username;    
     
+    private int numOfFriends;
+    private int numOfRequests;
+    private int numOfWaitings;
+    
     private Career career;
     private Location location;
     
     public Account() {
         dislikes = new ArrayList<String>();
         hobbies = new ArrayList<String>();
-        interestGender = "Both";
+        interestGender = "both";
         career = new Career();
         location = new Location();
         avatar = "http://farm8.staticflickr.com/7060/7061312585_b873307126.jpg";
@@ -48,10 +54,14 @@ public class Account implements Serializable {
      * @return age of user
      */
     public int getAge() {
+        if (birthday == null) {
+            return -1;
+        }
         SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
         int birthYear = Integer.parseInt(yearFormat.format(birthday));
         int currentYear = Integer.parseInt(yearFormat.format(new Date()));
         return currentYear - birthYear;
+     
     }
 
     public int getAccountId() {
@@ -157,8 +167,30 @@ public class Account implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
-    
-    
+
+    public int getNumOfFriends() {
+        return numOfFriends;
+    }
+
+    public void setNumOfFriends(int numOfFriends) {
+        this.numOfFriends = numOfFriends;
+    }
+
+    public int getNumOfRequests() {
+        return numOfRequests;
+    }
+
+    public void setNumOfRequests(int numOfRequests) {
+        this.numOfRequests = numOfRequests;
+    }
+
+    public int getNumOfWaitings() {
+        return numOfWaitings;
+    }
+
+    public void setNumOfWaitings(int numOfWaitings) {
+        this.numOfWaitings = numOfWaitings;
+    }
 
     @Override
     public String toString() {
@@ -190,6 +222,10 @@ public class Account implements Serializable {
         setInterestGender(resultSet.getString("interestGender"));
         setUsername(resultSet.getString("username"));
         setStatus(resultSet.getString("status"));
+        
+        setNumOfFriends(FriendDAO.getNumOfFriends(accountId));
+        setNumOfRequests(RequestDAO.getNumOfRequests(accountId));
+        setNumOfWaitings(RequestDAO.getNumOfWaitings(accountId));
     }
     
     /**

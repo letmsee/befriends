@@ -46,7 +46,31 @@ public class ViewFriendListServlet extends MyServlet {
         
         // get friend list
         ArrayList<Account> friendList = FriendDAO.getFriendList(accountId);
+        
+         // get number of results will be displayed
+        String tmp = request.getParameter("numOfResults");
+        int numOfResult = 0;
+        int incrementOfResults = Integer.parseInt(
+                getServletContext().getInitParameter("incrementOfResults"));
+        if (tmp == null) {
+            numOfResult = incrementOfResults;
+        } else {
+            numOfResult = Integer.parseInt(tmp);
+        }
+        
+        int totalResults = friendList.size();
+        if (numOfResult < totalResults) {
+            for (int i = totalResults-1; i >= numOfResult; i--) {
+                friendList.remove(i);
+            }
+        } else {
+            numOfResult = totalResults;
+        }
+        
         request.setAttribute("friendList", friendList);
+        request.setAttribute("numOfResult", numOfResult);
+        request.setAttribute("totalResults", totalResults);
+        request.setAttribute("incrementOfResults", incrementOfResults);
         gotoPage(request, response, "/view_friend_list.jsp");
     }
 

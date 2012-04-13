@@ -45,6 +45,29 @@ public class ViewWaitingListServlet extends MyServlet {
         int accountId = acc.getAccountId();
         ArrayList<Account> waitingList = RequestDAO.getWaitingList(accountId);
 
+         // get number of results will be displayed
+        String tmp = request.getParameter("numOfResults");
+        int numOfResult = 0;
+        int incrementOfResults = Integer.parseInt(
+                getServletContext().getInitParameter("incrementOfResults"));
+        if (tmp == null) {
+            numOfResult = incrementOfResults;
+        } else {
+            numOfResult = Integer.parseInt(tmp);
+        }
+        
+        int totalResults = waitingList.size();
+        if (numOfResult < totalResults) {
+            for (int i = totalResults-1; i >= numOfResult; i--) {
+                waitingList.remove(i);
+            }
+        } else {
+            numOfResult = totalResults;
+        }
+        
+        request.setAttribute("numOfResult", numOfResult);
+        request.setAttribute("totalResults", totalResults);
+        request.setAttribute("incrementOfResults", incrementOfResults);
         request.setAttribute("waitingList", waitingList);
         gotoPage(request, response, "/view_waiting_list.jsp");
     }
