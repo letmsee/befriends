@@ -26,7 +26,7 @@
                     <a href="
                        <c:url value="/ViewPersonalInfo">
                            <c:param name="accountId" value="${acc.accountId}"/>
-                       </c:url>
+                           p                       </c:url>
                        ">Username: ${acc.username}</a><br>
                     Age: ${acc.age}<br>
                     Gender: ${acc.gender}<br>

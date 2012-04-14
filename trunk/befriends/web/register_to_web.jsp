@@ -32,15 +32,15 @@
         <tr>
             <td>Birthday</td>
             <td>
-                <select name="month" >
-                    <option>Month</option>
-                    <c:forEach begin="1" end="12" varStatus="status">
+                 <select name="day">
+                    <option>Day</option>
+                    <c:forEach begin="1" end="31" varStatus="status">
                         <option>${status.index}</option>
                     </c:forEach>
                 </select>
-                <select name="day">
-                    <option>Day</option>
-                    <c:forEach begin="1" end="30" varStatus="status">
+                <select name="month" >
+                    <option>Month</option>
+                    <c:forEach begin="1" end="12" varStatus="status">
                         <option>${status.index}</option>
                     </c:forEach>
                 </select>

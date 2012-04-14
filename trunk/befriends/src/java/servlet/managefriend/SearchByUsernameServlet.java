@@ -6,6 +6,7 @@ package servlet.managefriend;
 
 import business.Account;
 import data.access.AccountDAO;
+import data.access.FriendDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -16,13 +17,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import servlet.MyServlet;
 
 /**
  *
  * @author duongna
  */
 @WebServlet(name = "SearchByUsername", urlPatterns = {"/SearchByUsernameServlet"})
-public class SearchByUsernameServlet extends HttpServlet {
+public class SearchByUsernameServlet extends MyServlet {
 
     /**
      * Processes requests for both HTTP
@@ -37,16 +39,11 @@ public class SearchByUsernameServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // check whether user is log
-        HttpSession session = request.getSession();
-        Account accTmp = (Account) session.getAttribute("account");
-        if (accTmp == null) {
-            //user not login 
-            String message = "You need to login before using any service";
-            request.setAttribute("message", message);
-            gotoPage(request, response, "/login.jsp");
+        if (!isLoggedin(request, "account")) {
+            requireLogin(request, response);
             return;
         }
-                
+        
         String usernameToFind = request.getParameter("usernameToFind");
         ArrayList<Account> searchResult = AccountDAO.searchByUsername(usernameToFind);
         

@@ -86,7 +86,7 @@ public class AddFriendServlet extends MyServlet {
         else {
             // successfull
             Account acc = (Account) session.getAttribute("account");
-            acc.setNumOfRequests(acc.getNumOfRequests() + 1);
+            acc.setNumOfRequests(acc.getNumOfWaitings() + 1);
                     
             String message = "Request is sent";
             request.setAttribute("message", message);

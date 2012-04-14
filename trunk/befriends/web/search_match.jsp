@@ -45,10 +45,9 @@
     </table>
 </c:if>
 <c:if test="${fn:length(searchResult) < totalResults}">
-    <form action="SearchByUsername">
+    <form action="SearchMatch">
         <input type="submit" value="More Results">
         <input type="hidden" name="numOfResults" value="${fn:length(searchResult) + incrementOfResults}">
-        <input type="hidden" name="usernameToFind" value="${usernameToFind}">
     </form>
 </c:if>
 <c:import url="/include/footer.jsp" />
