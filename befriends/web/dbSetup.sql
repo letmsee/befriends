@@ -37,8 +37,8 @@ CREATE TABLE Denial (
 denierId int not null,
 requestId int not null,
 CONSTRAINT FOREIGN KEY (denierId) REFERENCES Account(accountId),
-CONSTRAINT FOREIGN KEY (requestId) REFERENCES Account(accountId),
-CONSTRAINT PRIMARY KEY (denierId, requestId));
+CONSTRAINT FOREIGN KEY (requestId) REFERENCES Account(accountId));
+
 
 /* create table for hobby and dislike */
 CREATE TABLE Hobby (

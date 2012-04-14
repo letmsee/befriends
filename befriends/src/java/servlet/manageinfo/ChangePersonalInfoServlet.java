@@ -2,21 +2,23 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+package servlet.manageinfo;
 
-import data.pool.ConnectionPool;
+import business.Account;
+import data.access.AccountDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import servlet.MyServlet;
 
 /**
  *
  * @author duongna
  */
-public class TestDbServlet extends HttpServlet {
+public class ChangePersonalInfoServlet extends MyServlet {
 
     /**
      * Processes requests for both HTTP
@@ -30,10 +32,16 @@ public class TestDbServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       ConnectionPool pool = ConnectionPool.getInstance();
-       Connection c = pool.getConnection();
-       pool.freeConnection(c);
-       response.sendRedirect("http://google.com.vn");
+        if (!isLoggedin(request, "account")) {
+            requireLogin(request, response);
+            return;
+        }
+        
+        // get personal info
+        int accountId = Integer.parseInt(request.getParameter("accountId"));
+        Account acc = AccountDAO.getPersonalInfo(accountId);
+        request.setAttribute("account", acc);
+        gotoPage(request, response, "/change_personal_info.jsp");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

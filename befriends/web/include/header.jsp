@@ -32,7 +32,7 @@
                     <a href="ViewRequestList">View Request List(${sessionScope.account.numOfRequests}) </a><br>
                     <a href="ViewWaitingList">View Waiting List(${sessionScope.account.numOfWaitings})</a><br>
                     <a href="ViewFriendList">View Friend List(${sessionScope.account.numOfFriends})</a><br>
-                    <form action="/SearchMatch">
+                    <form action="SearchMatch">
                         <input type="submit" value="Search matching">
                     </form>
                 </td>
@@ -43,7 +43,15 @@
                            <c:param name="accountId" value="${sessionScope.account.accountId}"/>
                        </c:url>
                        ">View Personal Info</a><br>
+                    
+                    <a href="
+                       <c:url value="/ChangePersonalInfo">
+                           <c:param name="accountId" value="${sessionScope.account.accountId}"/>
+                       </c:url>
+                       ">Change Personal Info</a><br>
+                    
                 </td>
+                
             <tr>
             <form action="SearchByUsername">
                 <td>

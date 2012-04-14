@@ -188,4 +188,74 @@ public class FriendDAO extends DataDAO {
             freeDbResouce(preStatement, null, connection, pool);
         }
     }
+    
+    /**
+     * get number of common friends between two different users
+     * @param accountId1 - accountId of the first person
+     * @param accountId2 - accountId of the second person
+     * @return number of common friends
+     */
+    public static int getNumOfCommonFriends(int accountId1, int accountId2) {
+        int smallId = Math.min(accountId1, accountId2);
+        int bigId = Math.max(accountId1, accountId2);
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            int numOfCommons = 0;
+            
+            // find common friends that has the accountId less than two users
+            String sqlCode =
+                    "SELECT * " +
+                    "FROM Friend as f1, Friend as f2 " +
+                    "WHERE f1.accountId1 = f2.accountId1 AND " +
+                    "      f1.accountId2 = ? AND f2.accountId2 = ? ";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, smallId);
+            preStatement.setInt(2, bigId);
+            ResultSet resultSet = preStatement.executeQuery();
+            if (resultSet.last()) {
+                numOfCommons += resultSet.getRow();
+            }
+
+            resultSet.close();
+            preStatement.close();
+            // find common friends that has the accountId between two users' accountId
+            sqlCode = 
+                    "SELECT * " +
+                    "FROM Friend as f1, Friend as f2 " +
+                    "WHERE f1.accountId2 = f2.accountId1 AND " +
+                    "      f1.accountId1 = ? AND f2.accountId2 = ? ";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, smallId);
+            preStatement.setInt(2, bigId);
+            resultSet = preStatement.executeQuery();
+            if (resultSet.last()) {
+                numOfCommons += resultSet.getRow();
+            }
+            
+            resultSet.close();
+            preStatement.close();
+            // find common friend that has the accountId greater than two users' accountId
+            sqlCode =
+                    "SELECT * " +
+                    "FROM Friend as f1, Friend as f2 " +
+                    "WHERE f1.accountId2 = f2.accountId2 AND " +
+                    "      f1.accountId1 = ? AND f2.accountId1 = ? ";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, smallId);
+            preStatement.setInt(2, bigId);
+            resultSet = preStatement.executeQuery();
+            if (resultSet.last()) {
+                numOfCommons += resultSet.getRow();
+            }
+            resultSet.close();
+            return numOfCommons;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return 0;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
 }
