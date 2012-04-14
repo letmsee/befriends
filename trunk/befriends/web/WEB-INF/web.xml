@@ -2,7 +2,7 @@
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
     <context-param>
         <param-name>incrementOfResults</param-name>
-        <param-value>1</param-value>
+        <param-value>20</param-value>
     </context-param>
     <servlet>
         <servlet-name>TestDbServlet</servlet-name>
@@ -47,6 +47,10 @@
     <servlet>
         <servlet-name>SearchMatchServlet</servlet-name>
         <servlet-class>servlet.managefriend.SearchMatchServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ChangePersonalInfoServlet</servlet-name>
+        <servlet-class>servlet.manageinfo.ChangePersonalInfoServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>SearchByUsernameServlet</servlet-name>
@@ -118,6 +122,10 @@
     <servlet-mapping>
         <servlet-name>SearchMatchServlet</servlet-name>
         <url-pattern>/SearchMatch</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ChangePersonalInfoServlet</servlet-name>
+        <url-pattern>/ChangePersonalInfo</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

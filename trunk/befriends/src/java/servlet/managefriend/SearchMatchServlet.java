@@ -4,18 +4,24 @@
  */
 package servlet.managefriend;
 
+import business.Account;
+import business.AccountOfMatch;
+import data.access.AccountDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import servlet.MyServlet;
 
 /**
  *
  * @author duongna
  */
-public class SearchMatchServlet extends HttpServlet {
+public class SearchMatchServlet extends MyServlet {
 
     /**
      * Processes requests for both HTTP
@@ -29,7 +35,20 @@ public class SearchMatchServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       
+        if (!isLoggedin(request, "account")) {
+            requireLogin(request, response);
+            return;
+        }
+        
+        // get accountId
+        HttpSession session = request.getSession();
+        Account acc = (Account) session.getAttribute("account");
+        int accountId = acc.getAccountId();
+        
+        ArrayList<AccountOfMatch> searchResult = AccountDAO.searchMatch(accountId);
+        
+        request.setAttribute("searchResult", searchResult);
+        gotoPage(request, response, "/search_match.jsp");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

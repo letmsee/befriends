@@ -6,6 +6,8 @@
 package data.access;
 
 import business.Account;
+import business.AccountOfMatch;
+import business.MatchScoreComparator;
 import business.MatchingResult;
 import com.sun.corba.se.impl.orb.PrefixParserAction;
 import data.pool.ConnectionPool;
@@ -15,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.regex.MatchResult;
 
@@ -86,7 +89,7 @@ public class AccountDAO extends DataDAO {
             preStatement.setString(2, acc.getPassword());
             preStatement.setString(3, acc.getEmailAddress());
             preStatement.setString(4, acc.getGender());
-
+            
             // set birthday
             String birthdayStr = new SimpleDateFormat("yyyy/mm/dd").format(acc.getBirthday());
             preStatement.setString(5, birthdayStr);
@@ -129,7 +132,7 @@ public class AccountDAO extends DataDAO {
         }
     }
     
-     /*
+    /*
      * fills all basic information retrieved from database for account
      * basic information: accountId, username, emailAddress
      * @return Account that contain all information retrieve from database
@@ -139,7 +142,7 @@ public class AccountDAO extends DataDAO {
         Connection connection = pool.getConnection();
         PreparedStatement preStatement = null;
         try {
-            String sqlCode = 
+            String sqlCode =
                     "SELECT * FROM Account " +
                     "WHERE username = ? AND password = ? ";
             preStatement = connection.prepareStatement(sqlCode);
@@ -160,8 +163,8 @@ public class AccountDAO extends DataDAO {
             freeDbResouce(preStatement, null, connection, pool);
         }
     }
-  
-      /*
+    
+    /*
      * fills all basic information retrieved from database for account
      * basic information: accountId, username, emailAddress
      * @return Account that contain all information retrieve from database
@@ -171,7 +174,7 @@ public class AccountDAO extends DataDAO {
         Connection connection = pool.getConnection();
         PreparedStatement preStatement = null;
         try {
-            String sqlCode = 
+            String sqlCode =
                     "SELECT * FROM Account " +
                     "WHERE accountId = ?";
             preStatement = connection.prepareStatement(sqlCode);
@@ -193,7 +196,7 @@ public class AccountDAO extends DataDAO {
         }
     }
     
-     /*
+    /*
      * Use usename to search account that has similar usernames in the system
      * @return the list of accounts as the search result
      */
@@ -202,14 +205,14 @@ public class AccountDAO extends DataDAO {
         Connection connection = pool.getConnection();
         PreparedStatement preStatement = null;
         try {
-            String sqlCode = 
+            String sqlCode =
                     "SELECT * FROM Account " +
                     "WHERE username LIKE ? " +
                     "ORDER BY (username) ASC";
             preStatement = connection.prepareStatement(sqlCode);
             preStatement.setString(1, username + "%");
             ResultSet resultSet = preStatement.executeQuery();
-
+            
             ArrayList<Account> list = new ArrayList<Account>();
             while (resultSet.next()) {
                 Account acc = new Account();
@@ -225,7 +228,7 @@ public class AccountDAO extends DataDAO {
         }
     }
     
-     /*
+    /*
      * Use usename to search account that has similar usernames in the system
      * @param accountId - accountId of the account
      * @param limitOfResults - the maximum number of results
@@ -236,7 +239,7 @@ public class AccountDAO extends DataDAO {
         Connection connection = pool.getConnection();
         PreparedStatement preStatement = null;
         try {
-            String sqlCode = 
+            String sqlCode =
                     "SELECT * FROM Account " +
                     "WHERE username LIKE ? " +
                     "ORDER BY (username) ASC" +
@@ -245,7 +248,7 @@ public class AccountDAO extends DataDAO {
             preStatement.setString(1, username + "%");
             preStatement.setInt(2, limitOfResults);
             ResultSet resultSet = preStatement.executeQuery();
-
+            
             ArrayList<Account> list = new ArrayList<Account>();
             while (resultSet.next()) {
                 Account acc = new Account();
@@ -261,20 +264,21 @@ public class AccountDAO extends DataDAO {
         }
     }
     
+    
     /**
      * Retrieve personal info from database
      * @param accountId - id of person to get info
-     * @return Account object containing all personal info
+     * @return AccountOfMatch object containing all personal info
      */
-    public static Account getPersonalInfo(int accountId) {
+    public static AccountOfMatch getPersonalInfoMatch(int accountId) {
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
         PreparedStatement preStatement = null;
         try {
-            Account acc = new Account();
+            AccountOfMatch acc = new AccountOfMatch();
             
             // get basis information
-            String sqlCode = 
+            String sqlCode =
                     "SELECT * FROM Account " +
                     "WHERE accountId = ? ";
             preStatement = connection.prepareStatement(sqlCode);
@@ -287,7 +291,7 @@ public class AccountDAO extends DataDAO {
             resultSet.close();
             preStatement.close();
             // get hobby info
-            sqlCode = 
+            sqlCode =
                     "SELECT * FROM Hobby " +
                     "WHERE accountId = ?";
             preStatement = connection.prepareStatement(sqlCode);
@@ -298,7 +302,7 @@ public class AccountDAO extends DataDAO {
             resultSet.close();
             preStatement.close();
             // get dislike info
-            sqlCode = 
+            sqlCode =
                     "SELECT * FROM Dislike " +
                     "WHERE accountId = ?";
             preStatement = connection.prepareStatement(sqlCode);
@@ -306,10 +310,10 @@ public class AccountDAO extends DataDAO {
             resultSet = preStatement.executeQuery();
             acc.setDislikeInfo(resultSet);
             
-           resultSet.close();
+            resultSet.close();
             preStatement.close();
             // get career info
-            sqlCode = 
+            sqlCode =
                     "SELECT * FROM Career " +
                     "WHERE accountId = ?";
             preStatement = connection.prepareStatement(sqlCode);
@@ -322,7 +326,7 @@ public class AccountDAO extends DataDAO {
             resultSet.close();
             preStatement.close();
             // get location info
-            sqlCode = 
+            sqlCode =
                     "SELECT * FROM Location " +
                     "WHERE accountId = ?";
             preStatement = connection.prepareStatement(sqlCode);
@@ -330,8 +334,88 @@ public class AccountDAO extends DataDAO {
             resultSet = preStatement.executeQuery();
             if (resultSet.next()) {
                 acc.setLocationInfo(resultSet);
-            } 
-
+            }
+            
+            return acc;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return null;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
+    
+     /**
+     * Retrieve personal info from database
+     * @param accountId - id of person to get info
+     * @return Account object containing all personal info
+     */
+    public static Account getPersonalInfo(int accountId) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            Account acc = new Account();
+            
+            // get basis information
+            String sqlCode =
+                    "SELECT * FROM Account " +
+                    "WHERE accountId = ? ";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            ResultSet resultSet = preStatement.executeQuery();
+            if (resultSet.next()) {
+                acc.setBasicInfo(resultSet);
+            }
+            
+            resultSet.close();
+            preStatement.close();
+            // get hobby info
+            sqlCode =
+                    "SELECT * FROM Hobby " +
+                    "WHERE accountId = ?";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            resultSet = preStatement.executeQuery();
+            acc.setHobbyInfo(resultSet);
+            
+            resultSet.close();
+            preStatement.close();
+            // get dislike info
+            sqlCode =
+                    "SELECT * FROM Dislike " +
+                    "WHERE accountId = ?";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            resultSet = preStatement.executeQuery();
+            acc.setDislikeInfo(resultSet);
+            
+            resultSet.close();
+            preStatement.close();
+            // get career info
+            sqlCode =
+                    "SELECT * FROM Career " +
+                    "WHERE accountId = ?";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            resultSet = preStatement.executeQuery();
+            if (resultSet.next()) {
+                acc.setCareerInfo(resultSet);
+            }
+            
+            resultSet.close();
+            preStatement.close();
+            // get location info
+            sqlCode =
+                    "SELECT * FROM Location " +
+                    "WHERE accountId = ?";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            resultSet = preStatement.executeQuery();
+            if (resultSet.next()) {
+                acc.setLocationInfo(resultSet);
+            }
+            
             return acc;
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -342,21 +426,139 @@ public class AccountDAO extends DataDAO {
     }
     
     /**
-     * Search users that appropriate to the given User by 
+     * Search users that appropriate to the given User by
      * using matching algorithm
      */
-//   public static MatchingResult searchMatch(int accountId) {
-//       ConnectionPool pool = ConnectionPool.getInstance();
-//       Connection connection = pool.getConnection();
-//       PreparedStatement preStatement = null;
-//       try {
-//           Account accForm = AccountDAO.getAccount(accountId);
-//           
-//           MatchingResult matchingResult = new MatchingResult();
-//           
-//           // get all user account into MatchResult
-//           String sqlCode = 
-//                   "SELECT * FROM Account";
-//       }
-//   }
+    public static ArrayList<AccountOfMatch> searchMatch(int accountId) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            Account accForm = AccountDAO.getPersonalInfo(accountId);
+            
+            ArrayList<AccountOfMatch> searchResult = new ArrayList<AccountOfMatch>();
+            String interestGender = accForm.getInterestGender();
+
+            // get all user account into MatchResult
+            String sqlCode;
+            if (interestGender.equals("both")) {
+                sqlCode = 
+                        "SELECT * FROM Account " +
+                        "WHERE accountId != ? ";
+            } else {
+                sqlCode =   
+                        "SELECT * FROM Account " +
+                        "WHERE accountId != ?" +
+                        "WHERE gender = ? ";
+            }
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            if (!interestGender.equals("both")) {
+                preStatement.setString(2, accForm.getInterestGender());
+            }
+
+            ResultSet resultSet = preStatement.executeQuery();
+            while (resultSet.next()) {
+                AccountOfMatch accountOfMatch = (AccountOfMatch) getPersonalInfoMatch(resultSet.getInt("accountId"));
+                searchResult.add(accountOfMatch);
+            }
+            
+            // give mark for each account in the list 
+            for (AccountOfMatch accountOfMatch : searchResult) {
+                float matchScore = 0;
+                // count number of common friends 
+                accountOfMatch.setNumOfCommonFriends(
+                        FriendDAO.getNumOfCommonFriends(accountOfMatch.getAccountId(), accForm.getAccountId()));
+                matchScore = 10 * accountOfMatch.getNumOfCommonFriends();
+                
+                // compute score of likes
+                for (String like : accountOfMatch.getHobbies()) {
+                    for (String likeForm : accForm.getDislikes()) {
+                        if (like.equals(likeForm)) {
+                            matchScore += 3;
+                        }
+                    }
+                }
+                
+                // compute score for interestGender
+                String interestGenderForm = accForm.getInterestGender();
+                String interest = accountOfMatch.getInterestGender();
+                if (interestGenderForm.equals("both") ||
+                        interestGenderForm.equals(accountOfMatch.getGender())) {
+                    matchScore += 3.5;
+                } else {
+                    matchScore -= 3.5;
+                }
+                if (interest.equals("both") ||
+                        interest.equals(accForm.getGender())) {
+                    matchScore += 3.5;
+                } else {
+                    matchScore -= 3.5;
+                }
+                
+                // compute score of denial
+                int numOfDenials = DenialDAO.getNumOfDenials(accForm.getAccountId(), accountOfMatch.getAccountId());
+                matchScore -= 5*numOfDenials;
+                
+                // compute score of dislikes
+                for (String dislike : accountOfMatch.getDislikes()) {
+                    for (String dislikeForm : accForm.getDislikes()) {
+                        if (dislike.equals(dislikeForm)) {
+                            matchScore += 2;
+                        }
+                    }
+                }
+                
+                // compute score of confliction between dislikes and likes
+                for (String dislike : accountOfMatch.getDislikes()) {
+                    for (String likeForm : accForm.getHobbies()) {
+                        if (dislike.equals(likeForm)) {
+                            matchScore -= 1;
+                        }
+                    }
+                }
+
+                for (String like : accountOfMatch.getHobbies()) {
+                    for (String dislike : accForm.getDislikes()) {
+                        if (like.equals(dislike)) {
+                            matchScore -= 1;
+                        }
+                    }
+                }
+                
+                // compute score for difference of ages
+                int ageDiff = Math.abs(accountOfMatch.getAge() - accForm.getAge());
+                if (ageDiff <= 3) {
+                    matchScore += 3;
+                } else if (3 < ageDiff && ageDiff <= 5) {
+                    matchScore += 2;
+                } else if (5 < ageDiff && ageDiff <= 7) {
+                    matchScore -= 0.5;
+                } else {
+                    matchScore -= 2;
+                }
+                
+                
+                // compute score of location
+                String townForm = accForm.getLocation().getHometown();
+                String town = accountOfMatch.getLocation().getHometown();
+                if (townForm != null && town != null && townForm.equals(town)) {
+                    matchScore += 3;
+                }
+               
+                // save matchscore
+                accountOfMatch.setMatchScore(matchScore);
+            }
+           
+            // sort search result according the match score
+            Collections.sort(searchResult,
+                    Collections.reverseOrder(new MatchScoreComparator()) );
+            return searchResult;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return null;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
 }

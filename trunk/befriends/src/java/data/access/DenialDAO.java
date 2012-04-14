@@ -77,4 +77,38 @@ public class DenialDAO extends DataDAO {
             freeDbResouce(preStatement, null, connection, pool);
         }
     }
+    
+    /**
+     * get number of denials
+     * @param denialId - accountId of denier user
+     * @param requestId - accountId of request user
+     * @return number of times that the denier denies the request user
+     */
+    public static int getNumOfDenials(int denialId, int requestId) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            String sqlCode = 
+                    "SELECT count(requestId) as numOfDenials " +
+                    "FROM Denial " +
+                    "WHERE denierId = ? AND requestId = ? " +
+                    "GROUP BY denierId";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, denialId);
+            preStatement.setInt(2, requestId);
+            ResultSet resultSet = preStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("numOfDenials");
+            } else {
+                return 0;
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return 0;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
+    
 }
