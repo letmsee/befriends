@@ -47,7 +47,30 @@ public class SearchMatchServlet extends MyServlet {
         
         ArrayList<AccountOfMatch> searchResult = AccountDAO.searchMatch(accountId);
         
+        // get number of results will be displayed
+        String tmp = request.getParameter("numOfResults");
+        int numOfResult = 0;
+        int incrementOfResults = Integer.parseInt(
+                getServletContext().getInitParameter("incrementOfResults"));
+        if (tmp == null) {
+            numOfResult = incrementOfResults;
+        } else {
+            numOfResult = Integer.parseInt(tmp);
+        }
+        
+        int totalResults = searchResult.size();
+        if (numOfResult < totalResults) {
+            for (int i = totalResults-1; i >= numOfResult; i--) {
+                searchResult.remove(i);
+            }
+        } else {
+            numOfResult = totalResults;
+        }
+        
         request.setAttribute("searchResult", searchResult);
+        request.setAttribute("numOfResult", numOfResult);
+        request.setAttribute("totalResults", totalResults);
+        request.setAttribute("incrementOfResults", incrementOfResults);
         gotoPage(request, response, "/search_match.jsp");
     }
 

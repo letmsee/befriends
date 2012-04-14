@@ -16,7 +16,7 @@
         <c:forEach var="acc" items="${friendList}">
             <tr>
                 <td>
-                    <img scr="${acc.avatar}" height="100" width="100" >
+                    <img src="${acc.avatar}" height="100" width="100" >
                 </td>
                 <td>
                     Username: ${acc.username}<br>

@@ -72,7 +72,7 @@ public class AccountDAO extends DataDAO {
         }
     }
     
-    /*
+    /**
      * add an Account to database
      */
     public static void saveToDb(Account acc) {
@@ -80,6 +80,7 @@ public class AccountDAO extends DataDAO {
         Connection connection = pool.getConnection();
         PreparedStatement preStatement = null;
         try {
+            // save basic info
             String sqlCode =
                     "INSERT INTO Account " +
                     "(username, password, emailAddress, gender, birthday, avatar, interestGender) VALUES " +
@@ -96,8 +97,182 @@ public class AccountDAO extends DataDAO {
             preStatement.setString(6, acc.getAvatar());
             preStatement.setString(7, acc.getInterestGender());
             preStatement.executeUpdate();
+            
+          /*  preStatement.close();
+            // save hobbies 
+            for (String hobby : acc.getHobbies()) {
+                sqlCode = 
+                        "INSERT INTO Hobby " +
+                        "(accountId, field) VAUES " +
+                        "(?, ?) ";
+                preStatement = connection.prepareStatement(sqlCode);
+                preStatement.setInt(1, acc.getAccountId());
+                preStatement.setString(2, hobby);
+                preStatement.executeUpdate();
+            }
+
+            // save dislikes
+            preStatement.close();
+            for (String dislike : acc.getDislikes()) {
+                sqlCode = 
+                        "INSERT INTO Dislike " +
+                        "(accountId, field) VAUES " +
+                        "(?, ?) ";
+                preStatement = connection.prepareStatement(sqlCode);
+                preStatement.setInt(1, acc.getAccountId());
+                preStatement.setString(2, dislike);
+            } */
+
+            
+        /*    preStatement.close();
+            // save career info
+            sqlCode =
+                    "INSERT INTO Career " +
+                    "(school, job, accountId) VALUES " +
+                    "(?, ?, ?) ";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setString(1, acc.getCareer().getSchool());
+            preStatement.setString(2, acc.getCareer().getSchool());
+            preStatement.setInt(3, acc.getAccountId());
+            preStatement.executeUpdate();
+            
+            preStatement.close();
+            // save location info
+            sqlCode = 
+                    "INSERT INTO Location " +
+                    "(address, country, hometown, accountId) VALUES " +
+                    "(?, ?, ?) ";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setString(1, acc.getLocation().getAddress());
+            preStatement.setString(2, acc.getLocation().getCountry());
+            preStatement.setString(3, acc.getLocation().getHometown());
+            preStatement.setInt(4, acc.getAccountId());
+            preStatement.executeUpdate(); */
         } catch (SQLException sqle) {
             sqle.printStackTrace();
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
+    
+    /**
+     * update info for account
+     */
+    public static boolean updateAccount(Account acc) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            // update basic info
+            String sqlCode = 
+                    "UPDATE Account " +
+                    "SET " +
+                    "avatar = ?, " +
+                    "birthday = ?, " +
+                    "gender = ?, interestGender = ? " +
+                    "WHERE accountId = ?";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setString(1, acc.getAvatar());
+            // set birthday
+            String birthdayStr = new SimpleDateFormat("yyyy/mm/dd").format(acc.getBirthday());
+            preStatement.setString(2, birthdayStr);
+
+            preStatement.setString(3, acc.getGender());
+            preStatement.setString(4, acc.getInterestGender());
+            
+            preStatement.setInt(5, acc.getAccountId());
+            preStatement.executeUpdate();
+
+            // delete old hobbies
+            preStatement.close();
+            sqlCode = 
+                    "DELETE FROM Hobby " +
+                    "WHERE accountId = ? ";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, acc.getAccountId());
+            preStatement.executeUpdate();
+            preStatement.close();
+
+            // update hobbies
+            sqlCode = 
+                    "INSERT INTO Hobby " +
+                    "(accountId, field) VALUES " +
+                    "(?, ?) ";
+            for (String hobby : acc.getHobbies()) {
+                preStatement = connection.prepareStatement(sqlCode);
+                preStatement.setInt(1, acc.getAccountId());
+                preStatement.setString(2, hobby);
+                preStatement.executeUpdate();
+                preStatement.close();
+            }
+            
+            // delete old dislike
+            sqlCode = 
+                    "DELETE FROM Dislike " +
+                    "WHERE accountId = ? ";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, acc.getAccountId());
+            preStatement.executeUpdate();
+            preStatement.close();
+
+            // update hobbies
+            sqlCode = 
+                    "INSERT INTO Dislike " +
+                    "(accountId, field) VALUES " +
+                    "(?, ?) ";
+            for (String dislike : acc.getDislikes()) {
+                preStatement = connection.prepareStatement(sqlCode);
+                preStatement.setInt(1, acc.getAccountId());
+                preStatement.setString(2, dislike);
+                preStatement.executeUpdate();
+                preStatement.close();
+            }
+            
+            // delete old career
+            sqlCode =
+                    "DELETE FROM Career " +
+                    "WHERE accountId = ? ";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, acc.getAccountId());
+            preStatement.executeUpdate();
+            preStatement.close();
+            
+            // update new career
+            sqlCode = 
+                    "INSERT INTO Career " +
+                    "(accountId, school, job) VALUES " +
+                    "(?, ?, ?) ";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, acc.getAccountId());
+            preStatement.setString(2, acc.getCareer().getSchool());
+            preStatement.setString(3, acc.getCareer().getJob());
+            preStatement.executeUpdate();
+            preStatement.close();
+            
+            // delete old location
+            sqlCode = 
+                    "DELETE FROM Location " +
+                    "WHERE accountId = ? ";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, acc.getAccountId());
+            preStatement.executeUpdate();
+            preStatement.close();
+            
+            // update new location
+            sqlCode = 
+                    "INSERT INTO Location " +
+                    "(accountId, address, country, hometown) VALUES " +
+                    "(?, ?, ?, ?) ";
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, acc.getAccountId());
+            preStatement.setString(2, acc.getLocation().getAddress());
+            preStatement.setString(3, acc.getLocation().getCountry());
+            preStatement.setString(4, acc.getLocation().getHometown());
+            preStatement.executeUpdate();
+            return true;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return false;
         } finally {
             freeDbResouce(preStatement, null, connection, pool);
         }
@@ -427,7 +602,8 @@ public class AccountDAO extends DataDAO {
     
     /**
      * Search users that appropriate to the given User by
-     * using matching algorithm
+     * using matching.
+     * @param accountId - accountId of the user's account
      */
     public static ArrayList<AccountOfMatch> searchMatch(int accountId) {
         ConnectionPool pool = ConnectionPool.getInstance();
@@ -448,8 +624,8 @@ public class AccountDAO extends DataDAO {
             } else {
                 sqlCode =   
                         "SELECT * FROM Account " +
-                        "WHERE accountId != ?" +
-                        "WHERE gender = ? ";
+                        "WHERE accountId != ? " +
+                        "AND gender = ? ";
             }
             preStatement = connection.prepareStatement(sqlCode);
             preStatement.setInt(1, accountId);
@@ -461,6 +637,14 @@ public class AccountDAO extends DataDAO {
             while (resultSet.next()) {
                 AccountOfMatch accountOfMatch = (AccountOfMatch) getPersonalInfoMatch(resultSet.getInt("accountId"));
                 searchResult.add(accountOfMatch);
+            }
+            
+            // remove user's friends from the list
+            for (int i = searchResult.size() - 1; i >= 0; i--) {
+                Account acc = searchResult.get(i);
+                if (FriendDAO.areFriends(acc.getAccountId(), accForm.getAccountId())) {
+                    searchResult.remove(i);
+                }
             }
             
             // give mark for each account in the list 
