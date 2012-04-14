@@ -4,6 +4,14 @@
         <param-name>incrementOfResults</param-name>
         <param-value>3</param-value>
     </context-param>
+    <context-param>
+        <param-name>matchingLimit</param-name>
+        <param-value>10</param-value>
+    </context-param>
+     <context-param>
+        <param-name>rankNewLimit</param-name>
+        <param-value>10</param-value>
+    </context-param>
     <servlet>
         <servlet-name>TestDbServlet</servlet-name>
         <servlet-class>TestDbServlet</servlet-class>
@@ -51,6 +59,10 @@
     <servlet>
         <servlet-name>ChangePersonalInfoServlet</servlet-name>
         <servlet-class>servlet.manageinfo.ChangePersonalInfoServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>WelcomeServlet</servlet-name>
+        <servlet-class>servlet.general.WelcomeServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>SearchByUsernameServlet</servlet-name>
@@ -126,6 +138,10 @@
     <servlet-mapping>
         <servlet-name>ChangePersonalInfoServlet</servlet-name>
         <url-pattern>/ChangePersonalInfo</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>WelcomeServlet</servlet-name>
+        <url-pattern>/Welcome</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

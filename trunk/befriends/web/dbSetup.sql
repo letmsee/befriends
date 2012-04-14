@@ -70,4 +70,8 @@ hometown varchar(50),
 CONSTRAINT FOREIGN KEY (accountId) REFERENCES Account(accountId),
 CONSTRAINT PRIMARY KEY (accountId));
 
+/* create table for new account */
+CREATE TABLE NewAccount (
+accountId int not null primary key,
+date DATE not null);
 

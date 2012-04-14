@@ -307,7 +307,7 @@ public class AccountDAO extends DataDAO {
         }
     }
     
-    /*
+    /**
      * fills all basic information retrieved from database for account
      * basic information: accountId, username, emailAddress
      * @return Account that contain all information retrieve from database
@@ -339,7 +339,7 @@ public class AccountDAO extends DataDAO {
         }
     }
     
-    /*
+    /**
      * fills all basic information retrieved from database for account
      * basic information: accountId, username, emailAddress
      * @return Account that contain all information retrieve from database
@@ -648,6 +648,21 @@ public class AccountDAO extends DataDAO {
             }
             
             // give mark for each account in the list 
+           giveMark(searchResult, accForm);
+            return searchResult;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return null;
+        } finally {
+            freeDbResouce(preStatement, null, connection, pool);
+        }
+    }
+    
+    /**
+     * give mark for search result
+     */
+    public static void giveMark(ArrayList<AccountOfMatch> searchResult, Account accForm) {
+        // give mark for each account in the list 
             for (AccountOfMatch accountOfMatch : searchResult) {
                 float matchScore = 0;
                 // count number of common friends 
@@ -737,9 +752,53 @@ public class AccountDAO extends DataDAO {
             // sort search result according the match score
             Collections.sort(searchResult,
                     Collections.reverseOrder(new MatchScoreComparator()) );
+    }
+    
+    /**
+     * rank new account by using matching
+     * @param accountId - accountId of the account form
+     */
+    public static ArrayList<AccountOfMatch> rankNewAccount(int accountId) {
+         ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preStatement = null;
+        try {
+            Account accForm = AccountDAO.getPersonalInfo(accountId);
+            
+            ArrayList<AccountOfMatch> searchResult = new ArrayList<AccountOfMatch>();
+            String interestGender = accForm.getInterestGender();
+
+            // get all user account into MatchResult
+            String sqlCode;
+            if (interestGender.equals("both")) {
+                sqlCode = 
+                        "SELECT acc.* " +
+                        "FROM Account as acc, NewAccount as new " +
+                        "WHERE new.accountId != ? AND " +
+                        "      acc.accountId = new.accountId ";
+            } else {
+                sqlCode =   
+                        "SELECT acc.* FROM Account " +
+                        "WHERE new.accountId != ? AND " +
+                        "      acc.accountId = new.accountId AND " +                       
+                        "      acc.gender = ? ";
+            }
+            preStatement = connection.prepareStatement(sqlCode);
+            preStatement.setInt(1, accountId);
+            if (!interestGender.equals("both")) {
+                preStatement.setString(2, accForm.getInterestGender());
+            }
+
+            ResultSet resultSet = preStatement.executeQuery();
+            while (resultSet.next()) {
+                AccountOfMatch accountOfMatch = (AccountOfMatch) getPersonalInfoMatch(resultSet.getInt("accountId"));
+                searchResult.add(accountOfMatch);
+            }
+
+            giveMark(searchResult, accForm);
             return searchResult;
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
             return null;
         } finally {
             freeDbResouce(preStatement, null, connection, pool);
