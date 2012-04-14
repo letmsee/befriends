@@ -6,6 +6,7 @@ package servlet.general;
 
 import business.Account;
 import data.access.AccountDAO;
+import data.access.NewAccountDAO;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -84,9 +85,18 @@ public class RegisterToWebServlet extends HttpServlet {
         }
         else {
             AccountDAO.saveToDb(acc);
+            acc = AccountDAO.getAccount(acc);
             log("adding success");
+            
+            // save new account to the new account table
+           if ( NewAccountDAO.saveNewAccount(acc.getAccountId()) ) {
+               log("save to  new account success");
+           } else {
+               log ("save to new account fail!!!");
+           }
             gotoPage(request, response, "/home.jsp");
         }
+        
     }
     
     /*

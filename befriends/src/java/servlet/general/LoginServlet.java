@@ -56,8 +56,9 @@ public class LoginServlet extends HttpServlet {
         }
         else {
             acc = AccountDAO.getAccount(acc);
+            acc = AccountDAO.getPersonalInfo(acc.getAccountId());
             session.setAttribute("account", acc);
-            gotoPage(request, response, "/home.jsp");
+            gotoPage(request, response, "/Welcome");
         }
     }
 
